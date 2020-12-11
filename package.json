@@ -1,0 +1,64 @@
+{
+  "name": "call-duration-measurer",
+  "version": "0.1.0",
+  "description": "call-duration-measurer is a tool for measuring the time it takes for functions/promises to complete.",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=12.x"
+  },
+  "author": "Raymond Tang",
+  "license": "MIT",
+  "contextPath": "/",
+  "repository": "https://github.com/raymondtang310/call-duration-measurer.git",
+  "scripts": {
+    "build": "webpack",
+    "test": "yarn jest",
+    "lint": "eslint --ignore-path .gitignore --ignore-pattern node_modules . --ext .js",
+    "lint:fix": "yarn lint --fix",
+    "prepush": "yarn lint && yarn test"
+  },
+  "devDependencies": {
+    "@babel/core": "7.9.0",
+    "@babel/plugin-proposal-class-properties": "7.8.3",
+    "@babel/preset-env": "7.9.0",
+    "@babel/register": "7.9.0",
+    "@commitlint/cli": "8.3.5",
+    "@commitlint/config-conventional": "8.3.4",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "10.1.0",
+    "babel-jest": "25.2.4",
+    "babel-loader": "8.1.0",
+    "babel-plugin-lodash": "3.3.4",
+    "cross-env": "7.0.2",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.10.1",
+    "eslint-import-resolver-webpack": "0.12.1",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-no-only-tests": "2.4.0",
+    "eslint-plugin-prettier": "3.1.2",
+    "husky": "4.2.5",
+    "jest": "25.2.3",
+    "jest-junit": "10.0.0",
+    "lint-staged": "10.1.1",
+    "lodash-webpack-plugin": "0.11.5",
+    "prettier": "2.0.2",
+    "webpack": "4.42.1",
+    "webpack-cli": "^4.2.0"
+  },
+  "dependencies": {
+    "lodash": "4.17.20"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-push": "yarn prepush",
+      "post-merge": "yarn"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "yarn lint:fix"
+    ]
+  }
+}
