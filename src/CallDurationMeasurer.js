@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash';
+
 class CallDurationMeasurer {
   callDurations = [];
 
@@ -44,12 +46,12 @@ class CallDurationMeasurer {
   }
 
   /**
-   * Returns all call durations measured by this {@link CallDurationMeasurer}.
+   * Returns all call durations recorded by this {@link CallDurationMeasurer}.
    *
-   * @returns {[]} Returns all call durations measured by this {@link CallDurationMeasurer}.
+   * @returns {[]} Returns all call durations recorded by this {@link CallDurationMeasurer}.
    */
   getCallDurations() {
-    return this.callDurations;
+    return cloneDeep(this.callDurations);
   }
 }
 
