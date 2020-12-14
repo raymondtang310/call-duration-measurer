@@ -1,7 +1,7 @@
 {
   "name": "call-duration-measurer",
   "version": "0.1.0",
-  "description": "call-duration-measurer is a tool for measuring the time it takes for functions/promises to complete.",
+  "description": "call-duration-measurer is a utility for measuring the time it takes for functions/promises to complete.",
   "main": "dist/index.js",
   "engines": {
     "node": ">=12.x"
@@ -24,8 +24,8 @@
     "@babel/plugin-proposal-class-properties": "7.8.3",
     "@babel/preset-env": "7.9.0",
     "@babel/register": "7.9.0",
-    "@commitlint/cli": "8.3.5",
-    "@commitlint/config-conventional": "8.3.4",
+    "@commitlint/cli": "9.1.2",
+    "@commitlint/config-conventional": "9.1.2",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.1.0",
     "babel-jest": "25.2.4",
