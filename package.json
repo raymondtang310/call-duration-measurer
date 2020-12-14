@@ -2,20 +2,22 @@
   "name": "call-duration-measurer",
   "version": "0.1.0",
   "description": "call-duration-measurer is a tool for measuring the time it takes for functions/promises to complete.",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "engines": {
     "node": ">=12.x"
   },
   "author": "Raymond Tang",
   "license": "MIT",
-  "contextPath": "/",
   "repository": "https://github.com/raymondtang310/call-duration-measurer.git",
   "scripts": {
-    "build": "webpack",
+    "clean": "rimraf dist",
+    "build": "yarn clean && webpack",
     "test": "yarn jest",
     "lint": "eslint --ignore-path .gitignore --ignore-pattern node_modules . --ext .js",
     "lint:fix": "yarn lint --fix",
-    "prepush": "yarn lint && yarn test"
+    "prepush": "yarn lint && yarn test",
+    "pre-publish": "yarn prepush && yarn build",
+    "publish": "yarn pre-publish && yarn publish"
   },
   "devDependencies": {
     "@babel/core": "7.9.0",
@@ -42,6 +44,7 @@
     "lint-staged": "10.1.1",
     "lodash-webpack-plugin": "0.11.5",
     "prettier": "2.0.2",
+    "rimraf": "3.0.2",
     "webpack": "4.42.1",
     "webpack-cli": "4.2.0"
   },
@@ -60,5 +63,8 @@
     "*.js": [
       "yarn lint:fix"
     ]
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

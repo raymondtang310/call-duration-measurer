@@ -1,26 +1,22 @@
-const { HotModuleReplacementPlugin, NamedModulesPlugin } = require('webpack');
+const { NamedModulesPlugin } = require('webpack');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const { resolve } = require('path');
 
 module.exports = {
-  entry: ['@babel/polyfill', './src/index.js'],
+  entry: ['./src/index.js'],
   output: {
-    chunkFilename: '[name]-[chunkhash].js',
-    filename: '[name]-[hash].js',
-    hotUpdateChunkFilename: 'hot-update.[hash:6].js',
-    hotUpdateMainFilename: 'hot-update.[hash:6].json',
-    path: resolve(__dirname, '..', 'dist'),
+    filename: 'index.js',
+    libraryTarget: 'umd',
+    libraryExport: 'default',
+    path: resolve(__dirname, 'dist'),
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            plugins: ['lodash'],
-            presets: [['@babel/env']],
-          },
+        loader: 'babel-loader',
+        options: {
+          configFile: './babel.config.js',
         },
         exclude: /node_modules/,
       },
@@ -38,7 +34,6 @@ module.exports = {
     },
   },
   plugins: [
-    new HotModuleReplacementPlugin(),
     new LodashModuleReplacementPlugin({
       paths: true,
     }),
@@ -46,9 +41,9 @@ module.exports = {
   ],
   resolve: {
     modules: ['node_modules', 'src'],
-    extensions: ['.mjs', '.js'],
+    extensions: ['.js'],
     alias: {
-      src: resolve(__dirname, '../src'),
+      src: resolve(__dirname, 'src'),
     },
   },
   stats: {

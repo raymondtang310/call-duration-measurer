@@ -31,7 +31,7 @@ module.exports = {
     'import/core-modules': ['path', 'http'],
     'import/resolver': {
       webpack: {
-        config: 'config/webpack.config.js'
+        config: 'webpack.config.js'
       }
     },
   },

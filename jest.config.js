@@ -13,7 +13,7 @@ module.exports = {
     },
   },
   testMatch: ['<rootDir>/src/**/?(*.)test.js'],
-  setupFilesAfterEnv: ['<rootDir>/config/testSetup.js'],
+  setupFilesAfterEnv: ['<rootDir>/testSetup.js'],
   testURL: 'http://localhost',
   transform: {
     '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
