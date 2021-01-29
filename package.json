@@ -1,6 +1,6 @@
 {
   "name": "call-duration-measurer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "call-duration-measurer is a utility for measuring the time it takes for functions/promises to complete.",
   "main": "dist/index.js",
   "engines": {
