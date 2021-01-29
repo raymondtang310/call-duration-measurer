@@ -1,5 +1,3 @@
-import { cloneDeep } from 'lodash';
-
 class CallDurationMeasurer {
   callDurations = [];
 
@@ -51,7 +49,7 @@ class CallDurationMeasurer {
    * @returns {[]} Returns all call durations recorded by this {@link CallDurationMeasurer}.
    */
   getCallDurations() {
-    return cloneDeep(this.callDurations);
+    return this.callDurations.map(callDuration => ({ ...callDuration }));
   }
 }
 

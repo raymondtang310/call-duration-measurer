@@ -1,5 +1,4 @@
 const { NamedModulesPlugin } = require('webpack');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const { resolve } = require('path');
 
 module.exports = {
@@ -33,12 +32,7 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    new LodashModuleReplacementPlugin({
-      paths: true,
-    }),
-    new NamedModulesPlugin(),
-  ],
+  plugins: [new NamedModulesPlugin()],
   resolve: {
     modules: ['node_modules', 'src'],
     extensions: ['.js'],

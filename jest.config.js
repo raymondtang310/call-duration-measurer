@@ -20,9 +20,6 @@ module.exports = {
   },
   transformIgnorePatterns: ['[/\\\\]node_modules(/)[/\\\\].+\\.(js|jsx)$', '^.+\\.module\\.(css|sass|scss|svg)$'],
   moduleDirectories: ['node_modules', 'src'],
-  moduleNameMapper: {
-    '^lodash-es$': '<rootDir>/node_modules/lodash/index.js',
-  },
   moduleFileExtensions: ['js', 'json'],
   reporters: ['default', ['jest-junit', { outputDirectory: '<rootDir>/reports/', uniqueOutputName: 'true' }]],
 };
