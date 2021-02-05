@@ -1,8 +1,8 @@
 module.exports = {
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.js'],
+  collectCoverageFrom: ['src/**/*.ts'],
   coverageDirectory: 'reports',
-  coveragePathIgnorePatterns: ['index.js'],
+  coveragePathIgnorePatterns: ['index.ts'],
   coverageReporters: ['text', 'lcov'],
   coverageThreshold: {
     global: {
@@ -12,14 +12,17 @@ module.exports = {
       statements: 100,
     },
   },
-  testMatch: ['<rootDir>/src/**/?(*.)test.js'],
-  setupFilesAfterEnv: ['<rootDir>/testSetup.js'],
-  testURL: 'http://localhost',
-  transform: {
-    '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
+  globals: {
+    'ts-jest': {
+      tsconfig: {
+        target: 'ES2018',
+      },
+    },
   },
-  transformIgnorePatterns: ['[/\\\\]node_modules(/)[/\\\\].+\\.(js|jsx)$', '^.+\\.module\\.(css|sass|scss|svg)$'],
-  moduleDirectories: ['node_modules', 'src'],
-  moduleFileExtensions: ['js', 'json'],
+  preset: 'ts-jest',
   reporters: ['default', ['jest-junit', { outputDirectory: '<rootDir>/reports/', uniqueOutputName: 'true' }]],
+  setupFilesAfterEnv: ['<rootDir>/testSetup.js'],
+  testMatch: ['<rootDir>/src/**/?(*.)test.ts'],
+  transform: { '^.+\\.js$': '<rootDir>/node_modules/babel-jest' },
+  transformIgnorePatterns: ['[/\\\\]node_modules(/)[/\\\\].+\\.js$'],
 };

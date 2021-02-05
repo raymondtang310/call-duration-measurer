@@ -1,8 +1,9 @@
 const { NamedModulesPlugin } = require('webpack');
 const { resolve } = require('path');
+const TSConfigPathPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  entry: ['./src/index.js'],
+  entry: ['./src/index.ts'],
   output: {
     filename: 'index.js',
     libraryTarget: 'umd',
@@ -11,6 +12,11 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+      },
       {
         test: /\.js$/,
         loader: 'babel-loader',
@@ -34,11 +40,12 @@ module.exports = {
   },
   plugins: [new NamedModulesPlugin()],
   resolve: {
-    modules: ['node_modules', 'src'],
-    extensions: ['.js'],
     alias: {
       src: resolve(__dirname, 'src'),
     },
+    extensions: ['.js', '.ts'],
+    modules: ['node_modules', 'src'],
+    plugins: [new TSConfigPathPlugin({ configFile: './tsconfig.json' })],
   },
   stats: {
     assetsSort: '!size',
