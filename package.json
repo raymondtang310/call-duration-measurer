@@ -17,8 +17,7 @@
     "lint:fix": "yarn lint --fix",
     "version": "auto-changelog -p && git add CHANGELOG.md",
     "prepush": "yarn lint && yarn test",
-    "pre-publish": "yarn prepush && yarn build",
-    "publish": "yarn pre-publish && yarn publish"
+    "prepublishOnly": "yarn prepush && yarn build"
   },
   "devDependencies": {
     "@babel/core": "7.9.0",

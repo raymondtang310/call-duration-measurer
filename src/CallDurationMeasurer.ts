@@ -7,7 +7,7 @@ interface CallDuration {
    */
   name: string;
   /**
-   * The duration in milliseconds that it took for the call to complete.
+   * The time in milliseconds that it took for the call to complete.
    */
   duration: number;
 }
@@ -20,39 +20,59 @@ class CallDurationMeasurer {
   private callDurations: CallDuration[] = [];
 
   /**
-   * Invokes the given function and records the duration of the call.
-   * If the given function returns a promise, the time taken for the promise to complete is included in the recorded duration.
+   * Invokes the given function `func` and records the time taken for the call to complete.
+   * If `func` returns a promise, then the time taken for the promise to complete is included in the recorded duration.
    *
-   * @param fn - The function to invoke.
-   * @param scope - The value of the "this" keyword provided for the call to the given function.
-   * @param args - Arguments with which the given function should be called.
+   * @param func - The function to invoke.
+   * @param scope - Optional. The value to use as `this` when calling `func`.
+   * @param args - Optional. Arguments to call `func` with.
    *
-   * @returns If the result of the given function is a promise, returns a promise containing the resolved value of the promise
-   *          returned by the function. Otherwise, returns the result of the given function.
+   * @returns If the result of `func` is a promise, returns a promise containing the resolved value of the promise returned by `func`.
+   *          Otherwise, returns the result of `func`.
    */
-  public invoke<T>(fn: (...params: unknown[]) => T, scope?: unknown, ...args: unknown[]): T;
-  public invoke<T>(fn: (...params: unknown[]) => Promise<T>, scope?: unknown, ...args: unknown[]): Promise<T>;
-  public invoke<T>(fn: (...params: unknown[]) => T | Promise<T>, scope?: unknown, ...args: unknown[]): T | Promise<T> {
+  public invoke<T>(func: (...params: unknown[]) => T, scope?: unknown, ...args: unknown[]): T;
+  public invoke<T>(func: (...params: unknown[]) => Promise<T>, scope?: unknown, ...args: unknown[]): Promise<T>;
+  public invoke<T>(func: (...params: unknown[]) => T | Promise<T>, scope?: unknown, ...args: unknown[]): T | Promise<T> {
     const startTime = new Date();
-    let fnResult;
+    let funcResult;
 
     if (scope) {
-      fnResult = fn.apply(scope, args);
+      funcResult = func.apply(scope, args);
     } else {
-      fnResult = fn(...args);
+      funcResult = func(...args);
     }
 
     const recordCallDuration = (data: T): T => {
       const endTime = new Date();
       this.callDurations.push({
-        name: fn.name,
+        name: func.name,
         duration: endTime.valueOf() - startTime.valueOf(),
       });
 
       return data;
     };
 
-    return fnResult instanceof Promise ? fnResult.then(recordCallDuration) : recordCallDuration(fnResult);
+    return funcResult instanceof Promise ? funcResult.then(recordCallDuration) : recordCallDuration(funcResult);
+  }
+
+  /**
+   * Returns a new function that, once invoked, invokes the given function `func` and records the time taken for the `func` call to complete.
+   * If `func` returns a promise, then the time taken for the promise to complete is included in the recorded duration.
+   * Any arguments that are passed to the function returned by this method will be used to call `func` with.
+   *
+   * @param func - The function to invoke.
+   * @param scope - Optional. The value to use as `this` when calling `func`.
+   *
+   * @return Returns a new function that:
+   *
+   *         1) If the result of `func` is a promise, returns a promise containing the resolved value of the promise returned by `func`.
+   *
+   *         2) Otherwise, returns the result of `func`.
+   */
+  public measurify<T>(func: (...params: unknown[]) => T, scope?: unknown): (...args: unknown[]) => T;
+  public measurify<T>(func: (...params: unknown[]) => Promise<T>, scope?: unknown): (...args: unknown[]) => Promise<T>;
+  public measurify<T>(func: (...params: unknown[]) => T | Promise<T>, scope?: unknown): (...args: unknown[]) => T | Promise<T> {
+    return (...args: unknown[]): T | Promise<T> => this.invoke(func, scope, ...args);
   }
 
   /**

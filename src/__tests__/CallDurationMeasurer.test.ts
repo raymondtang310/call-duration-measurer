@@ -9,27 +9,27 @@ describe('CallDurationMeasurer', () => {
     describe('when there is a given scope', () => {
       it('should invoke the given function with the given arguments using the given scope', () => {
         const callDurationMeasurer = new CallDurationMeasurer();
-        const scope = { fn: jest.fn().mockName('fn') };
+        const scope = { func: jest.fn().mockName('scope.func') };
         const args = ['arg'];
-        jest.spyOn(scope.fn, 'apply').mockName('scope.fn.apply');
+        jest.spyOn(scope.func, 'apply').mockName('scope.func.apply');
 
-        callDurationMeasurer.invoke(scope.fn, scope, ...args);
+        callDurationMeasurer.invoke(scope.func, scope, ...args);
 
-        expect(scope.fn.apply).toHaveBeenCalledTimes(1);
-        expect(scope.fn.apply).toHaveBeenCalledWith(scope, args);
+        expect(scope.func.apply).toHaveBeenCalledTimes(1);
+        expect(scope.func.apply).toHaveBeenCalledWith(scope, args);
       });
     });
 
     describe('when there is NOT a given scope', () => {
       it('should invoke the given function with the given arguments', () => {
         const callDurationMeasurer = new CallDurationMeasurer();
-        const fn = jest.fn().mockName('fn');
+        const func = jest.fn().mockName('func');
         const args = ['arg'];
 
-        callDurationMeasurer.invoke(fn, null, ...args);
+        callDurationMeasurer.invoke(func, null, ...args);
 
-        expect(fn).toHaveBeenCalledTimes(1);
-        expect(fn).toHaveBeenCalledWith(...args);
+        expect(func).toHaveBeenCalledTimes(1);
+        expect(func).toHaveBeenCalledWith(...args);
       });
     });
 
@@ -39,10 +39,10 @@ describe('CallDurationMeasurer', () => {
           const callDurationMeasurer = new CallDurationMeasurer();
           const resolvedValue = 'resolvedValue';
           const scope = {
-            fn: (): Promise<string> => Promise.resolve(resolvedValue),
+            func: (): Promise<string> => Promise.resolve(resolvedValue),
           };
 
-          const result = await callDurationMeasurer.invoke(scope.fn, scope);
+          const result = await callDurationMeasurer.invoke(scope.func, scope);
 
           expect(result).toStrictEqual(resolvedValue);
         });
@@ -51,16 +51,30 @@ describe('CallDurationMeasurer', () => {
       describe('and the function does NOT return a promise', () => {
         it('should return the result of the function', () => {
           const callDurationMeasurer = new CallDurationMeasurer();
-          const fnResult = 'hello';
+          const funcResult = 'hello';
           const scope = {
-            fn: (): string => fnResult,
+            func: (): string => funcResult,
           };
 
-          const result = callDurationMeasurer.invoke(scope.fn, scope);
+          const result = callDurationMeasurer.invoke(scope.func, scope);
 
-          expect(result).toStrictEqual(fnResult);
+          expect(result).toStrictEqual(funcResult);
         });
       });
+    });
+  });
+
+  describe('measurify', () => {
+    it('should return a function that invokes the given function', () => {
+      const callDurationMeasurer = new CallDurationMeasurer();
+      const scope = { func: jest.fn().mockName('scope.func') };
+      const args = ['arg'];
+      jest.spyOn(callDurationMeasurer, 'invoke').mockName('callDurationMeasurer.invoke');
+
+      callDurationMeasurer.measurify(scope.func, scope)(...args);
+
+      expect(callDurationMeasurer.invoke).toHaveBeenCalledTimes(1);
+      expect(callDurationMeasurer.invoke).toHaveBeenCalledWith(scope.func, scope, ...args);
     });
   });
 
@@ -78,7 +92,7 @@ describe('CallDurationMeasurer', () => {
     describe('when 1 call has been invoked', () => {
       it('should return an array containing the call duration for that call', () => {
         const callDurationMeasurer = new CallDurationMeasurer();
-        const fn = (): void => {};
+        const func = (): void => {};
         const mockStartTime = new Date(0);
         const mockEndTime = new Date(100);
         const dateSpy = jest
@@ -86,12 +100,12 @@ describe('CallDurationMeasurer', () => {
           .mockImplementationOnce(() => (mockStartTime as unknown) as string)
           .mockImplementationOnce(() => (mockEndTime as unknown) as string);
 
-        callDurationMeasurer.invoke(fn);
+        callDurationMeasurer.invoke(func);
         const result = callDurationMeasurer.getCallDurations();
 
         expect(result).toStrictEqual([
           {
-            name: 'fn',
+            name: 'func',
             duration: 100,
           },
         ]);
@@ -103,30 +117,30 @@ describe('CallDurationMeasurer', () => {
     describe('when multiple calls have been invoked', () => {
       it('should return an array containing the call durations for every call', () => {
         const callDurationMeasurer = new CallDurationMeasurer();
-        const fn1 = (): void => {};
-        const fn2 = (): void => {};
-        const mockFn1StartTime = new Date(0);
-        const mockFn1EndTime = new Date(100);
-        const mockFn2StartTime = new Date(100);
-        const mockFn2EndTime = new Date(300);
+        const func1 = (): void => {};
+        const func2 = (): void => {};
+        const mockFunc1StartTime = new Date(0);
+        const mockFunc1EndTime = new Date(100);
+        const mockFunc2StartTime = new Date(100);
+        const mockFunc2EndTime = new Date(300);
         const dateSpy = jest
           .spyOn(global, 'Date')
-          .mockImplementationOnce(() => (mockFn1StartTime as unknown) as string)
-          .mockImplementationOnce(() => (mockFn1EndTime as unknown) as string)
-          .mockImplementationOnce(() => (mockFn2StartTime as unknown) as string)
-          .mockImplementationOnce(() => (mockFn2EndTime as unknown) as string);
+          .mockImplementationOnce(() => (mockFunc1StartTime as unknown) as string)
+          .mockImplementationOnce(() => (mockFunc1EndTime as unknown) as string)
+          .mockImplementationOnce(() => (mockFunc2StartTime as unknown) as string)
+          .mockImplementationOnce(() => (mockFunc2EndTime as unknown) as string);
 
-        callDurationMeasurer.invoke(fn1);
-        callDurationMeasurer.invoke(fn2);
+        callDurationMeasurer.invoke(func1);
+        callDurationMeasurer.measurify(func2)();
         const result = callDurationMeasurer.getCallDurations();
 
         expect(result).toStrictEqual([
           {
-            name: 'fn1',
+            name: 'func1',
             duration: 100,
           },
           {
-            name: 'fn2',
+            name: 'func2',
             duration: 200,
           },
         ]);

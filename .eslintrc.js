@@ -42,7 +42,7 @@ module.exports = {
       'error',
       {
         arrowParens: 'avoid',
-        printWidth: 125,
+        printWidth: 130,
         singleQuote: true,
         trailingComma: 'es5'
       }
