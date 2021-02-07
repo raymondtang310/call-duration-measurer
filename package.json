@@ -15,6 +15,7 @@
     "test": "yarn jest",
     "lint": "eslint --ignore-path .gitignore --ignore-pattern node_modules . --ext .js",
     "lint:fix": "yarn lint --fix",
+    "version": "auto-changelog -p && git add CHANGELOG.md",
     "prepush": "yarn lint && yarn test",
     "pre-publish": "yarn prepush && yarn build",
     "publish": "yarn pre-publish && yarn publish"
@@ -28,6 +29,7 @@
     "@commitlint/config-conventional": "9.1.2",
     "@typescript-eslint/eslint-plugin": "4.14.2",
     "@typescript-eslint/parser": "4.14.2",
+    "auto-changelog": "2.2.1",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.1.0",
     "babel-jest": "25.2.4",
