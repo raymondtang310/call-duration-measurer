@@ -70,10 +70,10 @@ In some instances, using `measurify` rather than `invoke` makes your code appear
 Namely, the scenario arises when there is no meaningful value to pass in for the `scope` parameter but there are `args` to pass to `func`.
 See the following code snippet below as an example:
 ```
-// Record the time taken to execute Math.round(2) using invoke:
+// Record the time taken to execute Math.round(1.9) using invoke:
 const roundedNumberUsingInvoke = callDurationMeasurer.invoke(Math.round, null, 1.9);
 
-// Record the time taken to execute Math.round(2) using measurify:
+// Record the time taken to execute Math.round(1.9) using measurify:
 const roundedNumberUsingMeasurify = callDurationMeasurer.measurify(Math.round)(1.9);
 ```
 
@@ -160,10 +160,10 @@ class MessagePrinter {
 }
 
 const main = async () => {
-  // Create a new CallDurationMeasurer.
+  // Create a new `CallDurationMeasurer`.
   const callDurationMeasurer = new CallDurationMeasurer();
 
-  // Invoke `someFunction` and record the time taken for the call INCLUDING the time taken for the promise to complete.
+  // Invoke `someFunction` and record the time taken for this call INCLUDING the time taken for the promise to complete.
   await callDurationMeasurer.invoke(someFunction);
 
   const messagePrinter = new MessagePrinter('Makoto is');
