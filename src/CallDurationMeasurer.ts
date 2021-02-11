@@ -34,13 +34,7 @@ class CallDurationMeasurer {
   public invoke<T>(func: (...params: unknown[]) => Promise<T>, scope?: unknown, ...args: unknown[]): Promise<T>;
   public invoke<T>(func: (...params: unknown[]) => T | Promise<T>, scope?: unknown, ...args: unknown[]): T | Promise<T> {
     const startTime = new Date();
-    let funcResult;
-
-    if (scope) {
-      funcResult = func.apply(scope, args);
-    } else {
-      funcResult = func(...args);
-    }
+    const funcResult = scope ? func.apply(scope, args) : func(...args);
 
     const recordCallDuration = (data: T): T => {
       const endTime = new Date();
@@ -78,10 +72,23 @@ class CallDurationMeasurer {
   /**
    * Returns all call durations recorded by this {@link CallDurationMeasurer}.
    *
-   * @returns Returns all call durations recorded by this {@link CallDurationMeasurer}.
+   * @returns Returns an array containing all {@link CallDuration}s recorded by this {@link CallDurationMeasurer}.
+   *          If no {@link CallDuration}s are recorded, returns an empty array.
    */
-  public getCallDurations(): Readonly<Readonly<CallDuration>[]> {
+  public getCallDurations(): ReadonlyArray<CallDuration> {
     return this.callDurations.map(callDuration => ({ ...callDuration }));
+  }
+
+  /**
+   * Removes all call durations recorded by this {@link CallDurationMeasurer}.
+   *
+   * @returns Returns an array containing all {@link CallDuration}s that were removed from this {@link CallDurationMeasurer}.
+   */
+  public clearCallDurations(): ReadonlyArray<CallDuration> {
+    const callDurations = this.getCallDurations();
+    this.callDurations = [];
+
+    return callDurations;
   }
 }
 

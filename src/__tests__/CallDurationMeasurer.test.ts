@@ -149,4 +149,54 @@ describe('CallDurationMeasurer', () => {
       });
     });
   });
+
+  describe('clearCallDurations', () => {
+    let callDurationMeasurer: CallDurationMeasurer;
+    let dateSpy: jest.SpyInstance<string, []>;
+
+    beforeEach(() => {
+      callDurationMeasurer = new CallDurationMeasurer();
+      const func1 = (): void => {};
+      const func2 = (): void => {};
+      const mockFunc1StartTime = new Date(0);
+      const mockFunc1EndTime = new Date(100);
+      const mockFunc2StartTime = new Date(100);
+      const mockFunc2EndTime = new Date(300);
+      dateSpy = jest
+        .spyOn(global, 'Date')
+        .mockImplementationOnce(() => (mockFunc1StartTime as unknown) as string)
+        .mockImplementationOnce(() => (mockFunc1EndTime as unknown) as string)
+        .mockImplementationOnce(() => (mockFunc2StartTime as unknown) as string)
+        .mockImplementationOnce(() => (mockFunc2EndTime as unknown) as string);
+
+      callDurationMeasurer.invoke(func1);
+      callDurationMeasurer.measurify(func2)();
+    });
+
+    it('should remove all call durations', () => {
+      callDurationMeasurer.clearCallDurations();
+      const result = callDurationMeasurer.getCallDurations();
+
+      expect(result).toStrictEqual([]);
+
+      dateSpy.mockRestore();
+    });
+
+    it('should return an array containing all call durations that were removed', () => {
+      const result = callDurationMeasurer.clearCallDurations();
+
+      expect(result).toStrictEqual([
+        {
+          name: 'func1',
+          duration: 100,
+        },
+        {
+          name: 'func2',
+          duration: 200,
+        },
+      ]);
+
+      dateSpy.mockRestore();
+    });
+  });
 });

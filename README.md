@@ -101,6 +101,7 @@ Returns all call durations recorded by this `CallDurationMeasurer`.
 
 #### Return Value
 Returns an array containing all `CallDuration`s recorded by this `CallDurationMeasurer`.
+If no `CallDuration`s are recorded, returns an empty array.
 The following describes the properties of a `CallDuration` object:
 
 | Property | Description | Type |
@@ -129,6 +130,32 @@ const updatedCallDurations = callDurationMeasurer.getCallDurations();
     { name: 'foo', duration: 1 },
   ]
  */
+```
+
+<br>
+
+### `clearCallDurations()`
+
+#### Description
+Removes all call durations recorded by this `CallDurationMeasurer`.
+
+#### Return Value
+Returns an array containing all `CallDuration`s that were removed from this `CallDurationMeasurer`.
+See **Return Value** documentation for `getCallDurations` for details on the properties of a `CallDuration` object.
+
+#### Example
+```
+const roundedNumber = callDurationMeasurer.measurify(Math.round)(1.9);
+
+const removedCallDurations = callDurationMeasurer.clearCallDurations();
+/*
+  [
+    { name: 'round', duration: 1 },
+  ]
+ */
+
+const updatedCallDurations = callDurationMeasurer.getCallDurations();
+// []
 ```
 
 <br>
@@ -184,8 +211,28 @@ const main = async () => {
     [
       { name: 'someFunction', duration: 1002 },
       { name: 'printMessages', duration: 5 },
+      { name: 'someOtherFunction', duration: 2 },
       { name: 'someOtherFunction', duration: 1 },
-      { name: 'someOtherFunction', duration: 1 },
+    ]
+   */
+
+  // Remove all recorded call durations.
+  callDurationMeasurer.clearCallDurations();
+
+  const updatedCallDurations = callDurationMeasurer.getCallDurations();
+
+  console.log(updatedCallDurations);
+  // []
+
+  callDurationMeasurer.measurify(someOtherFunction)('Futaba likes yakisoba');
+
+  // An array containing only the call duration for the most recent call to `someOtherFunction` above is returned due to executing `clearCallDurations()` beforehand.
+  const updatedCallDurations2 = callDurationMeasurer.getCallDurations();
+
+  console.log(updatedCallDurations2);
+  /*
+    [
+      { name: 'someOtherFunction', duration: 3 },
     ]
    */
 };
