@@ -2,7 +2,7 @@ module.exports = {
   env: {
     es6: true,
     node: true,
-    jest: true
+    jest: true,
   },
   extends: [
     'plugin:import/typescript',
@@ -44,8 +44,8 @@ module.exports = {
         arrowParens: 'avoid',
         printWidth: 130,
         singleQuote: true,
-        trailingComma: 'es5'
-      }
+        trailingComma: 'es5',
+      },
     ],
     '@typescript-eslint/explicit-function-return-type': 'error',
     '@typescript-eslint/no-explicit-any': 'error',
@@ -57,8 +57,8 @@ module.exports = {
     'import/core-modules': ['path', 'http'],
     'import/resolver': {
       webpack: {
-        config: 'webpack.config.js'
-      }
+        config: 'webpack.config.js',
+      },
     },
   },
 };

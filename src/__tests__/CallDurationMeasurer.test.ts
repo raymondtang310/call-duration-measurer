@@ -18,23 +18,8 @@ describe('CallDurationMeasurer', () => {
         expect(scope.func.apply).toHaveBeenCalledTimes(1);
         expect(scope.func.apply).toHaveBeenCalledWith(scope, args);
       });
-    });
 
-    describe('when there is NOT a given scope', () => {
-      it('should invoke the given function with the given arguments', () => {
-        const callDurationMeasurer = new CallDurationMeasurer();
-        const func = jest.fn().mockName('func');
-        const args = ['arg'];
-
-        callDurationMeasurer.invoke(func, null, ...args);
-
-        expect(func).toHaveBeenCalledTimes(1);
-        expect(func).toHaveBeenCalledWith(...args);
-      });
-    });
-
-    describe('when the given function has finished executing', () => {
-      describe('and the function returns a promise', () => {
+      describe('and the given function returns a promise', () => {
         it('should return a promise containing the resolved value of the promise returned by the function', async () => {
           const callDurationMeasurer = new CallDurationMeasurer();
           const resolvedValue = 'resolvedValue';
@@ -48,7 +33,7 @@ describe('CallDurationMeasurer', () => {
         });
       });
 
-      describe('and the function does NOT return a promise', () => {
+      describe('and the given function does NOT return a promise', () => {
         it('should return the result of the function', () => {
           const callDurationMeasurer = new CallDurationMeasurer();
           const funcResult = 'hello';
@@ -62,19 +47,134 @@ describe('CallDurationMeasurer', () => {
         });
       });
     });
+
+    describe('when there is NOT a given scope', () => {
+      it('should invoke the given function with the given arguments', () => {
+        const callDurationMeasurer = new CallDurationMeasurer();
+        const func = jest.fn().mockName('func');
+        const args = ['arg'];
+
+        callDurationMeasurer.invoke(func, null, ...args);
+
+        expect(func).toHaveBeenCalledTimes(1);
+        expect(func).toHaveBeenCalledWith(...args);
+      });
+
+      describe('and the given function returns a promise', () => {
+        it('should return a promise containing the resolved value of the promise returned by the function', async () => {
+          const callDurationMeasurer = new CallDurationMeasurer();
+          const resolvedValue = 'resolvedValue';
+          const func = (): Promise<string> => Promise.resolve(resolvedValue);
+
+          const result = await callDurationMeasurer.invoke(func);
+
+          expect(result).toStrictEqual(resolvedValue);
+        });
+      });
+
+      describe('and the given function does NOT return a promise', () => {
+        it('should return the result of the function', () => {
+          const callDurationMeasurer = new CallDurationMeasurer();
+          const funcResult = 'hello';
+          const func = (): string => funcResult;
+
+          const result = callDurationMeasurer.invoke(func);
+
+          expect(result).toStrictEqual(funcResult);
+        });
+      });
+    });
   });
 
   describe('measurify', () => {
-    it('should return a function that invokes the given function', () => {
+    it('should return a function', () => {
       const callDurationMeasurer = new CallDurationMeasurer();
-      const scope = { func: jest.fn().mockName('scope.func') };
-      const args = ['arg'];
-      jest.spyOn(callDurationMeasurer, 'invoke').mockName('callDurationMeasurer.invoke');
+      const func = (): void => {};
 
-      callDurationMeasurer.measurify(scope.func, scope)(...args);
+      const result = callDurationMeasurer.measurify(func);
 
-      expect(callDurationMeasurer.invoke).toHaveBeenCalledTimes(1);
-      expect(callDurationMeasurer.invoke).toHaveBeenCalledWith(scope.func, scope, ...args);
+      expect(result).toStrictEqual(expect.any(Function));
+    });
+
+    describe('when the resulting function is invoked', () => {
+      describe('and there is a given scope', () => {
+        it('should invoke the given function with the given arguments using the given scope', () => {
+          const callDurationMeasurer = new CallDurationMeasurer();
+          const scope = { func: jest.fn().mockName('scope.func') };
+          const args = ['arg'];
+          jest.spyOn(scope.func, 'apply').mockName('scope.func.apply');
+
+          callDurationMeasurer.measurify(scope.func, scope)(...args);
+
+          expect(scope.func.apply).toHaveBeenCalledTimes(1);
+          expect(scope.func.apply).toHaveBeenCalledWith(scope, args);
+        });
+
+        describe('and the given function returns a promise', () => {
+          it('should return a promise containing the resolved value of the promise returned by the function', async () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const resolvedValue = 'resolvedValue';
+            const scope = {
+              func: (): Promise<string> => Promise.resolve(resolvedValue),
+            };
+
+            const result = await callDurationMeasurer.measurify(scope.func, scope)();
+
+            expect(result).toStrictEqual(resolvedValue);
+          });
+        });
+
+        describe('and the given function does NOT return a promise', () => {
+          it('should return the result of the function', () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const funcResult = 'hello';
+            const scope = {
+              func: (): string => funcResult,
+            };
+
+            const result = callDurationMeasurer.measurify(scope.func, scope)();
+
+            expect(result).toStrictEqual(funcResult);
+          });
+        });
+      });
+
+      describe('and there is NOT a given scope', () => {
+        it('should invoke the given function with the given arguments', () => {
+          const callDurationMeasurer = new CallDurationMeasurer();
+          const func = jest.fn().mockName('func');
+          const args = ['arg'];
+
+          callDurationMeasurer.measurify(func)(...args);
+
+          expect(func).toHaveBeenCalledTimes(1);
+          expect(func).toHaveBeenCalledWith(...args);
+        });
+
+        describe('and the given function returns a promise', () => {
+          it('should return a promise containing the resolved value of the promise returned by the function', async () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const resolvedValue = 'resolvedValue';
+            const func = (): Promise<string> => Promise.resolve(resolvedValue);
+
+            const result = await callDurationMeasurer.measurify(func)();
+
+            expect(result).toStrictEqual(resolvedValue);
+          });
+        });
+
+        describe('and the given function does NOT return a promise', () => {
+          it('should return the result of the function', () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const funcResult = 'hello';
+            const func = (): string => funcResult;
+
+            const result = callDurationMeasurer.measurify(func)();
+
+            expect(result).toStrictEqual(funcResult);
+          });
+        });
+      });
     });
   });
 
@@ -197,6 +297,189 @@ describe('CallDurationMeasurer', () => {
       ]);
 
       dateSpy.mockRestore();
+    });
+  });
+
+  describe('invokeWithOptions', () => {
+    describe('when options are given', () => {
+      describe('and there is a given scope', () => {
+        describe('and there are given arguments', () => {
+          it('should invoke the given function with the given arguments using the given scope', () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const scope = { func: jest.fn().mockName('scope.func') };
+            const args = ['arg'];
+            jest.spyOn(scope.func, 'apply').mockName('scope.func.apply');
+
+            callDurationMeasurer.invokeWithOptions(scope.func, { scope, args });
+
+            expect(scope.func.apply).toHaveBeenCalledTimes(1);
+            expect(scope.func.apply).toHaveBeenCalledWith(scope, args);
+          });
+        });
+
+        describe('and there are NOT given arguments', () => {
+          it('should invoke the given function without any arguments using the given scope', () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const scope = { func: jest.fn().mockName('scope.func') };
+            jest.spyOn(scope.func, 'apply').mockName('scope.func.apply');
+
+            callDurationMeasurer.invokeWithOptions(scope.func, { scope });
+
+            expect(scope.func.apply).toHaveBeenCalledTimes(1);
+            expect(scope.func.apply).toHaveBeenCalledWith(scope, []);
+          });
+        });
+
+        describe('and the given function returns a promise', () => {
+          it('should return a promise containing the resolved value of the promise returned by the function', async () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const resolvedValue = 'resolvedValue';
+            const scope = {
+              func: (): Promise<string> => Promise.resolve(resolvedValue),
+            };
+
+            const result = await callDurationMeasurer.invokeWithOptions(scope.func, { scope });
+
+            expect(result).toStrictEqual(resolvedValue);
+          });
+        });
+
+        describe('and the given function does NOT return a promise', () => {
+          it('should return the result of the function', () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const funcResult = 'hello';
+            const scope = {
+              func: (): string => funcResult,
+            };
+
+            const result = callDurationMeasurer.invokeWithOptions(scope.func, { scope });
+
+            expect(result).toStrictEqual(funcResult);
+          });
+        });
+      });
+
+      describe('and there is NOT a given scope', () => {
+        describe('and there are given arguments', () => {
+          it('should invoke the given function with the given arguments', () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const func = jest.fn().mockName('func');
+            const args = ['arg'];
+
+            callDurationMeasurer.invokeWithOptions(func, { args });
+
+            expect(func).toHaveBeenCalledTimes(1);
+            expect(func).toHaveBeenCalledWith(...args);
+          });
+        });
+
+        describe('and there are NOT given arguments', () => {
+          it('should invoke the given function without any arguments', () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const func = jest.fn().mockName('func');
+
+            callDurationMeasurer.invokeWithOptions(func, {});
+
+            expect(func).toHaveBeenCalledTimes(1);
+            expect(func).toHaveBeenCalledWith();
+          });
+        });
+
+        describe('and the given function returns a promise', () => {
+          it('should return a promise containing the resolved value of the promise returned by the function', async () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const resolvedValue = 'resolvedValue';
+            const func = (): Promise<string> => Promise.resolve(resolvedValue);
+
+            const result = await callDurationMeasurer.invokeWithOptions(func, {});
+
+            expect(result).toStrictEqual(resolvedValue);
+          });
+        });
+
+        describe('and the given function does NOT return a promise', () => {
+          it('should return the result of the function', () => {
+            const callDurationMeasurer = new CallDurationMeasurer();
+            const funcResult = 'hello';
+            const func = (): string => funcResult;
+
+            const result = callDurationMeasurer.invokeWithOptions(func, {});
+
+            expect(result).toStrictEqual(funcResult);
+          });
+        });
+      });
+
+      describe('and there is a given name for the function call', () => {
+        it('should record the call duration using the given name', () => {
+          const callDurationMeasurer = new CallDurationMeasurer();
+          const func = jest.fn().mockName('func');
+          const functionCallName = 'functionCallName';
+
+          callDurationMeasurer.invokeWithOptions(func, { functionCallName });
+          const callDurations = callDurationMeasurer.getCallDurations();
+
+          expect(callDurations[0].name).toStrictEqual(functionCallName);
+        });
+      });
+
+      describe('and there is NOT a given name for the function call', () => {
+        it('should record the call duration using the given function’s name', () => {
+          const callDurationMeasurer = new CallDurationMeasurer();
+          const func = jest.fn().mockName('func');
+
+          callDurationMeasurer.invokeWithOptions(func, {});
+          const callDurations = callDurationMeasurer.getCallDurations();
+
+          expect(callDurations[0].name).toStrictEqual(func.name);
+        });
+      });
+    });
+
+    describe('when options are NOT given', () => {
+      it('should invoke the given function without any arguments', () => {
+        const callDurationMeasurer = new CallDurationMeasurer();
+        const func = jest.fn().mockName('func');
+
+        callDurationMeasurer.invokeWithOptions(func);
+
+        expect(func).toHaveBeenCalledTimes(1);
+        expect(func).toHaveBeenCalledWith();
+      });
+
+      it('should record the call duration using the given function’s name', () => {
+        const callDurationMeasurer = new CallDurationMeasurer();
+        const func = jest.fn().mockName('func');
+
+        callDurationMeasurer.invokeWithOptions(func);
+        const callDurations = callDurationMeasurer.getCallDurations();
+
+        expect(callDurations[0].name).toStrictEqual(func.name);
+      });
+
+      describe('and the given function returns a promise', () => {
+        it('should return a promise containing the resolved value of the promise returned by the function', async () => {
+          const callDurationMeasurer = new CallDurationMeasurer();
+          const resolvedValue = 'resolvedValue';
+          const func = (): Promise<string> => Promise.resolve(resolvedValue);
+
+          const result = await callDurationMeasurer.invokeWithOptions(func);
+
+          expect(result).toStrictEqual(resolvedValue);
+        });
+      });
+
+      describe('and the given function does NOT return a promise', () => {
+        it('should return the result of the function', () => {
+          const callDurationMeasurer = new CallDurationMeasurer();
+          const funcResult = 'hello';
+          const func = (): string => funcResult;
+
+          const result = callDurationMeasurer.invokeWithOptions(func);
+
+          expect(result).toStrictEqual(funcResult);
+        });
+      });
     });
   });
 });

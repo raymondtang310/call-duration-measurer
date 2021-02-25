@@ -13,7 +13,7 @@
     "clean": "rimraf dist",
     "build": "yarn clean && webpack",
     "test": "yarn jest",
-    "lint": "eslint --ignore-path .gitignore --ignore-pattern node_modules . --ext .js",
+    "lint": "eslint --ignore-path .gitignore --ignore-pattern node_modules . --ext .ts",
     "lint:fix": "yarn lint --fix",
     "version": "auto-changelog -p && git add CHANGELOG.md",
     "prepush": "yarn lint && yarn test",
