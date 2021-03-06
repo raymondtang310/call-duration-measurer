@@ -1,34 +1,4 @@
-/**
- * A `CallDuration` contains data for a completed function call, including a name referring to the function call and the duration of the call.
- */
-interface CallDuration {
-  /**
-   * The name referring to the function call.
-   */
-  name: string;
-  /**
-   * The time in milliseconds that it took for the call to complete.
-   */
-  duration: number;
-}
-
-/**
- * Options used to configure how a given function is called and/or recorded.
- */
-interface InvokeOptions {
-  /**
-   * Custom `name` that is used when recording the {@link CallDuration} for a given function.
-   */
-  functionCallName?: string;
-  /**
-   * The value to use as `this` when calling a given function.
-   */
-  scope?: unknown;
-  /**
-   * Arguments to call a given function with.
-   */
-  args?: unknown[];
-}
+import { CallDuration, CallDurationRecordingOptions } from 'types';
 
 /**
  * This class provides functionality for recording the durations of provided functions.
@@ -110,11 +80,11 @@ class CallDurationMeasurer {
    * @returns If the result of `func` is a promise, returns a promise containing the resolved value of the promise returned by `func`.
    *          Otherwise, returns the result of `func`.
    */
-  public invokeWithOptions<T>(func: (...params: unknown[]) => T, options?: InvokeOptions): T;
-  public invokeWithOptions<T>(func: (...params: unknown[]) => Promise<T>, options?: InvokeOptions): Promise<T>;
+  public invokeWithOptions<T>(func: (...params: unknown[]) => T, options?: CallDurationRecordingOptions): T;
+  public invokeWithOptions<T>(func: (...params: unknown[]) => Promise<T>, options?: CallDurationRecordingOptions): Promise<T>;
   public invokeWithOptions<T>(
     func: (...params: unknown[]) => T | Promise<T>,
-    { functionCallName = func.name, scope, args = [] }: InvokeOptions = {
+    { functionCallName = func.name, scope, args = [] }: CallDurationRecordingOptions = {
       functionCallName: func.name,
       args: [],
     }
@@ -122,17 +92,19 @@ class CallDurationMeasurer {
     const startTime = new Date();
     const funcResult = scope ? func.apply(scope, args) : func(...args);
 
-    const recordCallDuration = (data: T): T => {
-      const endTime = new Date();
-      this.callDurations.push({
-        name: functionCallName,
-        duration: endTime.valueOf() - startTime.valueOf(),
-      });
+    return funcResult instanceof Promise
+      ? funcResult.then(data => this.recordCallDuration(functionCallName, startTime, data))
+      : this.recordCallDuration(functionCallName, startTime, funcResult);
+  }
 
-      return data;
-    };
+  private recordCallDuration<T>(functionCallName: string, startTime: Date, data: T): T {
+    const endTime = new Date();
+    this.callDurations.push({
+      name: functionCallName,
+      duration: endTime.valueOf() - startTime.valueOf(),
+    });
 
-    return funcResult instanceof Promise ? funcResult.then(recordCallDuration) : recordCallDuration(funcResult);
+    return data;
   }
 }
 

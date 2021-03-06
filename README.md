@@ -14,33 +14,59 @@ yarn add call-duration-measurer
 ```
 
 ## API
-This package exports the `CallDurationMeasurer` class:
+
+### `CallDurationMeasurer`
+The `call-duration-measurer` package exports the `CallDurationMeasurer` class:
 ```
-const CallDurationMeasurer = require('call-duration-measurer');
+import { CallDurationMeasurer } from 'call-duration-measurer';
 
 const callDurationMeasurer = new CallDurationMeasurer();
 ```
 
+The `CallDurationMeasurer` class provides a stateful way to measure and record the call durations of given functions.
+This is particularly useful when working with code that includes several function calls that you want to measure and keep track of.
+
+#### How to import:
+- Root level named import (ES6):
+    ```
+    import { CallDurationMeasurer } from 'call-duration-measurer';
+    ```
+- Root level named import (CommonJS):
+    ```
+    const { CallDurationMeasurer } = require('call-duration-measurer');
+    ```
+- Subfolder import (ES6):
+    ```
+    import CallDurationMeasurer from 'call-duration-measurer/CallDurationMeasurer';
+    ```
+- Subfolder import (CommonJS):
+    ```
+    const CallDurationMeasurer = require('call-duration-measurer/CallDurationMeasurer').default;
+    ```
+
+**Note:** If your application is using a bundler (e.g., webpack), importing from the subfolder can reduce your application's bundle size, since importing from a specific directory can help the bundler detect which parts of the `call-duration-measurer` package are actually being used.  
+Coming soon: Better tree-shaking support when using the root level named import via ES6 `import`.
+
 The `CallDurationMeasurer` class contains the following methods:
 
-### `invoke(func, [scope, ...args])`
+#### `invoke(func, [scope, ...args])`
 
-#### Description
+##### Description
 Invokes the given function `func` and records the time taken for the call to complete.
 If `func` returns a promise, then the time taken for the promise to complete is included in the recorded duration.
 
 **Warning:** If you are executing this code in Internet Explorer, please consider using `invokeWithOptions` and specifying `options.functionCallName` instead. See the documentation including the note on use cases for `invokeWithOptions` below.
 
-#### Arguments
+##### Arguments
 - `func` - The function to invoke.
 - `scope` - Optional. The value to use as `this` when calling `func`.
 - `args` - Optional. Arguments to call `func` with.
 
-#### Return Value
+##### Return Value
 If the result of `func` is a promise, returns a promise containing the resolved value of the promise returned by `func`.
 Otherwise, returns the result of `func`.
 
-#### Example
+##### Example
 ```
 class MessageBuilder {
   constructor(baseMessage) {
@@ -60,9 +86,9 @@ const message = callDurationMeasurer.invoke(messageBuilder.buildMessage, message
 
 <br>
 
-### `measurify(func, [scope])`
+#### `measurify(func, [scope])`
 
-#### Description
+##### Description
 Returns a new function that, once invoked, invokes the given function `func` and records the time taken for the `func` call to complete.
 If `func` returns a promise, then the time taken for the promise to complete is included in the recorded duration.
 Any arguments that are passed to the function returned by this method will be used to call `func` with.
@@ -76,21 +102,23 @@ See the following code snippet below as an example:
 ```
 // Record the time taken to execute Math.round(1.9) using invoke:
 const roundedNumberUsingInvoke = callDurationMeasurer.invoke(Math.round, null, 1.9);
+// 2
 
 // Record the time taken to execute Math.round(1.9) using measurify:
 const roundedNumberUsingMeasurify = callDurationMeasurer.measurify(Math.round)(1.9);
+// 2
 ```
 
-#### Arguments
+##### Arguments
 - `func` - The function to invoke once the new function returned by this method is invoked.
 - `scope` - Optional. The value to use as `this` when calling `func`.
 
-#### Return Value
+##### Return Value
 Returns a new function that:
 1) If the result of `func` is a promise, returns a promise containing the resolved value of the promise returned by `func`.
 2) Otherwise, returns the result of `func`.
 
-#### Example
+##### Example
 ```
 const roundedNumber = callDurationMeasurer.measurify(Math.round)(1.9);
 // 2
@@ -98,14 +126,15 @@ const roundedNumber = callDurationMeasurer.measurify(Math.round)(1.9);
 
 <br>
 
-### `getCallDurations()`
+#### `getCallDurations()`
 
-#### Description
+##### Description
 Returns all call durations recorded by this `CallDurationMeasurer`.
 
-#### Return Value
+##### Return Value
 Returns an array containing all `CallDuration`s recorded by this `CallDurationMeasurer`.
 If no `CallDuration`s are recorded, returns an empty array.
+
 The following describes the properties of a `CallDuration` object:
 
 | Property | Description | Type |
@@ -113,9 +142,10 @@ The following describes the properties of a `CallDuration` object:
 | name | The name referring to the function call. | string |
 | duration | The time in milliseconds that it took for the call to complete. | number |
 
-#### Example
+##### Example
 ```
 const roundedNumber = callDurationMeasurer.measurify(Math.round)(1.9);
+// 2
 
 const callDurations = callDurationMeasurer.getCallDurations();
 /*
@@ -125,6 +155,7 @@ const callDurations = callDurationMeasurer.getCallDurations();
  */
 
 const foo = () => console.log('foo');
+
 callDurationMeasurer.invoke(foo);
 
 const updatedCallDurations = callDurationMeasurer.getCallDurations();
@@ -138,18 +169,19 @@ const updatedCallDurations = callDurationMeasurer.getCallDurations();
 
 <br>
 
-### `clearCallDurations()`
+#### `clearCallDurations()`
 
-#### Description
+##### Description
 Removes all call durations recorded by this `CallDurationMeasurer`.
 
-#### Return Value
+##### Return Value
 Returns an array containing all `CallDuration`s that were removed from this `CallDurationMeasurer`.
 See **Return Value** documentation for `getCallDurations` for details on the properties of a `CallDuration` object.
 
-#### Example
+##### Example
 ```
 const roundedNumber = callDurationMeasurer.measurify(Math.round)(1.9);
+// 2
 
 const removedCallDurations = callDurationMeasurer.clearCallDurations();
 /*
@@ -164,14 +196,14 @@ const updatedCallDurations = callDurationMeasurer.getCallDurations();
 
 <br>
 
-### `invokeWithOptions(func, [options])`
+#### `invokeWithOptions(func, [options])`
 
-#### Description
+##### Description
 Invokes the given function `func` and records the time taken for the call to complete.
 If `func` returns a promise, then the time taken for the promise to complete is included in the recorded duration.
 This method is similar to `invoke`, but this method offers greater configurability through the `options` object.
 
-#### Arguments
+##### Arguments
 - `func` - The function to invoke.
 - `options` - Optional. Options used to configure how `func` is called and/or recorded.
 
@@ -183,11 +215,11 @@ The following describes the properties of an `options` object:
 | scope | Optional. The value to use as `this` when calling `func`. | object |
 | args | Optional. Arguments to call `func` with. | array |
 
-#### Return Value
+##### Return Value
 If the result of `func` is a promise, returns a promise containing the resolved value of the promise returned by `func`.
 Otherwise, returns the result of `func`.
 
-#### Example
+##### Example
 ```
 class MessageBuilder {
   constructor(baseMessage) {
@@ -413,29 +445,208 @@ const callDurations = callDurationMeasurer.getCallDurations();
 
 <br>
 
-## Example Usage
+### Inline Measuring
+The `call-duration-measurer` package also exports multiple standalone measuring functions that return/resolve measured durations:
 ```
-const CallDurationMeasurer = require('call-duration-measurer');
+import { invoke, measurify, invokeWithOptions } from 'call-duration-measurer';
+```
 
-const someFunction = () => {
+Whereas the `CallDurationMeasurer` class is helpful for keeping a history of call durations, these inline measuring functions are useful for stateless one-off call duration measurements.
+
+#### How to import:
+
+- Root level named imports (ES6):
+    ```
+    import { invoke, measurify, invokeWithOptions } from 'call-duration-measurer';
+    ```
+- Root level named imports (CommonJS):
+    ```
+    const { invoke, measurify, invokeWithOptions } = require('call-duration-measurer');
+    ```
+- Subfolder named imports (ES6):
+    ```
+    import { invoke, measurify, invokeWithOptions } from 'call-duration-measurer/inlineMeasurer';
+    ```
+- Subfolder named imports (CommonJS):
+    ```
+    const { invoke, measurify, invokeWithOptions } = require('call-duration-measurer/inlineMeasurer');
+    ```
+- Subfolder single object import containing all functions (ES6):
+    ```
+    import * as inlineMeasurer from 'call-duration-measurer/inlineMeasurer';
+    // inlineMeasurer.invoke(...)
+    // inlineMeasurer.measurify(...)
+    // inlineMeasurer.invokeWithOptions(...)
+    ```
+- Subfolder single object import containing all functions (CommonJS):
+    ```
+    const inlineMeasurer = require('call-duration-measurer/inlineMeasurer');
+    // inlineMeasurer.invoke(...)
+    // inlineMeasurer.measurify(...)
+    // inlineMeasurer.invokeWithOptions(...)
+    ```
+
+**Note:** If your application is using a bundler (e.g., webpack), importing from the subfolder can reduce your application's bundle size, since importing from a specific directory can help the bundler detect which parts of the `call-duration-measurer` package are actually being used.  
+Coming soon: Better tree-shaking support when using the top level named imports via ES6 `import`.
+
+This package supports the following inline measuring functions:
+
+#### `invoke(func, [scope, ...args])`
+
+##### Description
+Invokes the given function `func` and records the time taken for the call to complete.
+If `func` returns a promise, then the time taken for the promise to complete is included in the recorded duration.
+
+##### Arguments
+- `func` - The function to invoke.
+- `scope` - Optional. The value to use as `this` when calling `func`.
+- `args` - Optional. Arguments to call `func` with.
+
+##### Return Value
+If the result of `func` is a promise, returns a promise containing a `MeasurementResult`.
+Otherwise, returns a `MeasurementResult`.
+
+The following describes the properties of a `MeasurementResult` object:
+
+| Property | Description | Type |
+|----------|-------------|------|
+| data | If `func` returns a promise: the resolved value of the promise returned by `func`.<br>Otherwise: the result of `func`. | any |
+| duration | The time in milliseconds that it took for the call to complete. | number |
+
+##### Example
+```
+class MessageBuilder {
+  constructor(baseMessage) {
+    this.baseMessage = baseMessage;
+  }
+
+  buildMessage(subMessage1, subMessage2) {
+    return `${this.baseMessage} ${subMessage1} ${subMessage2}`;
+  }
+}
+
+const messageBuilder = new MessageBuilder('Haru Okumura');
+
+const { data, duration } = invoke(messageBuilder.buildMessage, messageBuilder, 'is', 'rich');
+// { data: 'Haru Okumura is rich', duration: 1 }
+```
+
+<br>
+
+#### `measurify(func, [scope])`
+
+##### Description
+Returns a new function that, once invoked, invokes the given function `func` and measures the time taken for the `func` call to complete.
+If `func` returns a promise, then the time taken for the promise to complete is included in the measured duration.
+Any arguments that are passed to the function returned by this method will be used to call `func` with.
+
+**Note:** This function is similar to `invoke` but has a key difference in that `invoke` **calls** `func`, whereas `measurify` **returns a function which *upon invocation* calls** `func`.  
+In some instances, using `measurify` rather than `invoke` makes your code appear slightly cleaner and more intuitive.
+Namely, the scenario arises when there is no meaningful value to pass in for the `scope` parameter but there are `args` to pass to `func`.
+See the following code snippet below as an example:
+```
+// Measure the time taken to execute Math.round(1.9) using invoke:
+const measurementResultUsingInvoke = invoke(Math.round, null, 1.9);
+// { data: 2, duration: 1 }
+
+// Measure the time taken to execute Math.round(1.9) using measurify:
+const measurementResultUsingMeasurify = measurify(Math.round)(1.9);
+// { data: 2, duration: 1 }
+```
+
+##### Arguments
+- `func` - The function to invoke once the new function returned by this method is invoked.
+- `scope` - Optional. The value to use as `this` when calling `func`.
+
+##### Return Value
+Returns a new function that:
+1) If the result of `func` is a promise, returns a promise containing a `MeasurementResult`.
+2) Otherwise, returns a `MeasurementResult`.
+
+See **Return Value** documentation for `invoke` for details on the properties of a `MeasurementResult` object.
+
+##### Example
+```
+const { data, duration } = measurify(Math.round)(1.9);
+// { data: 2, duration: 1 }
+```
+
+<br>
+
+#### `invokeWithOptions(func, [options])`
+
+##### Description
+Invokes the given function `func` and measures the time taken for the call to complete.
+If `func` returns a promise, then the time taken for the promise to complete is included in the measured duration.
+This function behaves the same as `invoke` and only differs in function signature:
+- `invoke` takes in `func`, `scope`, and `args` as separate arguments
+- `invokeWithOptions` takes in `func` and `options`, and `options` contains properties for `scope` and `args`
+
+##### Arguments
+- `func` - The function to invoke.
+- `options` - Optional. Options used to configure how `func` is called.
+
+The following describes the properties of an `options` object:
+
+| Property | Description | Type |
+|----------|-------------|------|
+| scope | Optional. The value to use as `this` when calling `func`. | object |
+| args | Optional. Arguments to call `func` with. | array |
+
+##### Return Value
+If the result of `func` is a promise, returns a promise containing a `MeasurementResult`.
+Otherwise, returns a `MeasurementResult`.
+
+See **Return Value** documentation for `invoke` for details on the properties of a `MeasurementResult` object.
+
+##### Example
+```
+class MessageBuilder {
+  constructor(baseMessage) {
+    this.baseMessage = baseMessage;
+  }
+
+  buildMessage(subMessage1, subMessage2) {
+    return `${this.baseMessage} ${subMessage1} ${subMessage2}`;
+  }
+}
+
+const messageBuilder = new MessageBuilder('Ann Takamaki');
+
+const { data, duration } = invokeWithOptions(messageBuilder.buildMessage, {
+  scope: messageBuilder,
+  args: ['likes', 'sweets'],
+});
+// { data: 'Ann Takamaki likes sweets', duration: 1 }
+```
+
+<br>
+
+## Example Usage
+
+### Stateful call duration measuring:
+```
+import { CallDurationMeasurer } from 'call-duration-measurer';
+
+const someFunctionThatReturnsAPromise = () => {
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve();
+      resolve('Resolved value!');
     }, 1000)
   });
 };
 
-const someOtherFunction = msg => {
-  console.log(msg);
+const greet = name => {
+  return `Hi, ${name}`;
 };
 
-class MessagePrinter {
-  constructor(baseMsg) {
-    this.baseMsg = baseMsg;
+class MessageBuilder {
+  constructor(baseMessage) {
+    this.baseMessage = baseMessage;
   }
 
-  printMessages(msg1, msg2) {
-    console.log(this.baseMsg, msg1, msg2);
+  buildMessage(subMessage1, subMessage2) {
+    return `${this.baseMessage} ${subMessage1} ${subMessage2}`;
   }
 }
 
@@ -443,25 +654,35 @@ const main = async () => {
   // Create a new `CallDurationMeasurer`.
   const callDurationMeasurer = new CallDurationMeasurer();
 
-  // Invoke `someFunction` and record the time taken for this call INCLUDING the time taken for the promise to complete.
-  await callDurationMeasurer.invoke(someFunction);
+  // Invoke `someFunctionThatReturnsAPromise` and record the time taken for this call INCLUDING the time taken for the promise to complete.
+  const result1 = await callDurationMeasurer.invoke(someFunctionThatReturnsAPromise);
+  console.log(result1);
+  // 'Resolved Value!'
 
-  const messagePrinter = new MessagePrinter('Makoto is');
-  // Invoke the `printMessages` method on `messagePrinter` with 'best' and 'girl' as arguments, and record the time taken for this call to complete.
-  callDurationMeasurer.invoke(messagePrinter.printMessages, messagePrinter, 'best', 'girl');
+  const messageBuilder = new MessageBuilder('Makoto is');
+  // Invoke the `buildMessage` method on `messageBuilder` with 'best' and 'girl' as arguments, and record the time taken for this call to complete.
+  const result2 = callDurationMeasurer.invoke(messageBuilder.buildMessage, messageBuilder, 'best', 'girl');
+  console.log(result2);
+  // 'Makoto is best girl'
 
-  // Invoke `someOtherFunction`, passing in 'Hi' as an argument, and record the time taken for this call to complete.. The value of `this` is irrelevant for this function, so `null` is passed in as the `scope` argument.
-  callDurationMeasurer.invoke(someOtherFunction, null, 'Hi');
+  // Invoke `greet`, passing in 'Ann' as an argument, and record the time taken for this call to complete. The value of `this` is irrelevant for this function, so `null` is passed in as the `scope` argument.
+  const result3 = callDurationMeasurer.invoke(greet, null, 'Ann');
+  console.log(result3);
+  // 'Hi, Ann'
 
-  // Invoke `someOtherFunction`, passing in 'Hello' as an argument, and record the time taken for this call to complete. The `measurify` method (and the function returned by it) is used here as an alternative to the `invoke` method.
-  callDurationMeasurer.measurify(someOtherFunction)('Hello');
+  // Invoke `greet`, passing in 'Kasumi' as an argument, and record the time taken for this call to complete. The `measurify` method (and the function returned by it) is used here as an alternative to the `invoke` method.
+  const result4 = callDurationMeasurer.measurify(greet)('Kasumi');
+  console.log(result4);
+  // 'Hi, Kasumi'
 
-  // Invoke `printMessages` on `messagePrinter` with 'top' and 'tier' as arguments, and record the time taken for this call to complete. The `invokeWithOptions` method is used here to provide a custom name used in recording this function call.
-  callDurationMeasurer.invokeWithOptions(messagePrinter.printMessages, {
-    functionCallName: 'printTopTierMessages',
-    scope: messagePrinter,
+  // Invoke the `buildMessage` method on `messageBuilder` with 'top' and 'tier' as arguments, and record the time taken for this call to complete. The `invokeWithOptions` method is used here to provide a custom name used in recording this function call.
+  const result5 = callDurationMeasurer.invokeWithOptions(messageBuilder.buildMessage, {
+    functionCallName: 'buildTopTierMessage',
+    scope: messageBuilder,
     args: ['top', 'tier'],
   });
+  console.log(result5);
+  // 'Makoto is top tier'
 
   // Retrieve recorded call durations.
   const callDurations = callDurationMeasurer.getCallDurations();
@@ -469,11 +690,11 @@ const main = async () => {
   console.log(callDurations);
   /*
     [
-      { name: 'someFunction', duration: 1002 },
-      { name: 'printMessages', duration: 5 },
-      { name: 'someOtherFunction', duration: 2 },
-      { name: 'someOtherFunction', duration: 1 },
-      { name: 'printTopTierMessages', duration: 5 },
+      { name: 'someFunctionThatReturnsAPromise', duration: 1002 },
+      { name: 'buildMessage', duration: 2 },
+      { name: 'greet', duration: 1 },
+      { name: 'greet', duration: 1 },
+      { name: 'buildTopTierMessage', duration: 2 },
     ]
    */
 
@@ -485,17 +706,80 @@ const main = async () => {
   console.log(updatedCallDurations);
   // []
 
-  callDurationMeasurer.measurify(someOtherFunction)('Futaba likes yakisoba');
+  const result6 = callDurationMeasurer.measurify(greet)('Futaba');
+  console.log(result6);
+  // 'Hi, Futaba'
 
-  // An array containing only the call duration for the most recent call to `someOtherFunction` above is returned due to executing `clearCallDurations()` beforehand.
+  // An array containing only the call duration for the most recent call to `greet` above is returned due to executing `clearCallDurations()` beforehand.
   const updatedCallDurations2 = callDurationMeasurer.getCallDurations();
 
   console.log(updatedCallDurations2);
   /*
     [
-      { name: 'someOtherFunction', duration: 3 },
+      { name: 'greet', duration: 1 },
     ]
    */
+};
+
+main();
+```
+
+### Stateless call duration measuring:
+```
+import { invoke, measurify, invokeWithOptions } from 'call-duration-measurer';
+
+const someFunctionThatReturnsAPromise = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve('Resolved value!');
+    }, 1000)
+  });
+};
+
+const greet = name => {
+  return `Hi, ${name}`;
+};
+
+class MessageBuilder {
+  constructor(baseMessage) {
+    this.baseMessage = baseMessage;
+  }
+
+  buildMessage(subMessage1, subMessage2) {
+    return `${this.baseMessage} ${subMessage1} ${subMessage2}`;
+  }
+}
+
+const main = async () => {
+  // Invoke `someFunctionThatReturnsAPromise` and measure the time taken for this call INCLUDING the time taken for the promise to complete.
+  const measurementResult1 = await invoke(someFunctionThatReturnsAPromise);
+  console.log(measurementResult1);
+  // { data: 'Resolved value!', duration: 1002 }
+
+  const messageBuilder = new MessageBuilder('Makoto is');
+
+  // Invoke the `buildMessage` method on `messageBuilder` with 'best' and 'girl' as arguments, and measure the time taken for this call to complete.
+  const measurementResult2 = invoke(messageBuilder.buildMessage, messageBuilder, 'best', 'girl');
+  console.log(measurementResult2);
+  // { data: 'Makoto is best girl', duration: 2 }
+
+  // Invoke the `buildMessage` method on `messageBuilder` with 'top' and 'tier' as arguments, and measure the time taken for this call to complete. The `invokeWithOptions` function is used here as an alternative to the `invoke` function.
+  const measurementResult3 = invokeWithOptions(messageBuilder.buildMessage, {
+    scope: messageBuilder,
+    args: ['top', 'tier'],
+  });
+  console.log(measurementResult3);
+  // { data: 'Makoto is top tier', duration: 2 }
+
+  // Invoke `greet`, passing in 'Haru' as an argument, and measure the time taken for this call to complete. The value of `this` is irrelevant for this function, so `null` is passed in as the `scope` argument.
+  const measurementResult4 = invoke(greet, null, 'Haru');
+  console.log(measurementResult4);
+  // { data: 'Hi, Haru', duration: 1 }
+
+  // Invoke `greet`, passing in 'Sumire' as an argument, and measure the time taken for this call to complete. The `measurify` function (and the function returned by it) is used here as an alternative to the `invoke` function.
+  const measurementResult5 = measurify(greet)('Sumire');
+  console.log(measurementResult5);
+  // { data: 'Hi, Sumire', duration: 1 }
 };
 
 main();

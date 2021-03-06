@@ -13,7 +13,7 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ['CallDurationMeasurer.test.ts'],
+      files: ['CallDurationMeasurer.test.ts', 'inlineMeasurer.test.ts'],
       rules: {
         '@typescript-eslint/no-empty-function': 'off',
       },
@@ -25,9 +25,10 @@ module.exports = {
       },
     },
     {
-      files: ['webpack.config.js'],
+      files: ['webpack.config.js', 'scripts/*'],
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
       },
     },
   ],

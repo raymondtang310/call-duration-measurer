@@ -13,6 +13,7 @@ node_modules/
 # Build artifacts
 dist
 .webpack
+*.tgz
 
 # Test output
 reports

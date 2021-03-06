@@ -4,9 +4,17 @@
     "baseUrl": ".",
     "declaration": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "outDir": "./dist/",
+    "paths": {
+      "*": ["./src/*"]
+    },
+    "plugins": [
+      { "transform": "typescript-transform-paths" },
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ],
     "strict": true,
     "target": "es5"
   },

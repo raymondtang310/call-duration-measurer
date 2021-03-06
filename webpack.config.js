@@ -3,18 +3,24 @@ const { resolve } = require('path');
 const TSConfigPathPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  entry: ['./src/index.ts'],
+  entry: {
+    index: resolve(__dirname, 'src', 'index.ts'),
+    'CallDurationMeasurer/index': resolve(__dirname, 'src', 'CallDurationMeasurer', 'index.ts'),
+    'inlineMeasurer/index': resolve(__dirname, 'src', 'inlineMeasurer', 'index.ts'),
+  },
   output: {
-    filename: 'index.js',
+    filename: '[name].js',
     libraryTarget: 'umd',
-    libraryExport: 'default',
     path: resolve(__dirname, 'dist'),
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         loader: 'ts-loader',
+        options: {
+          compiler: 'ttypescript',
+        },
         exclude: /node_modules/,
       },
       {
