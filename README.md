@@ -1,6 +1,6 @@
 # call-duration-measurer
 
-call-duration-measurer is a utility for measuring the time it takes for function calls to complete.
+`call-duration-measurer` is a utility for measuring the time it takes for function calls to complete.
 For functions that return promises, the time taken for the promise to complete is included in the recorded duration.
 
 ## Installation
@@ -798,3 +798,32 @@ const main = async () => {
 
 main();
 ```
+
+## Migrating from v1 to v2
+If you are upgrading `call-duration-measurer` from v1 to v2, the only breaking change is to update your import statements for importing the `CallDurationMeasurer` class:
+
+### call-duration-measurer v1
+
+#### ES6
+```
+import CallDurationMeasurer from 'call-duration-measurer;
+```
+
+#### CommonJS
+```
+const CallDurationMeasurer = require('call-duration-measurer);
+```
+
+### call-duration-measurer v2
+
+#### ES6
+```
+import { CallDurationMeasurer } from 'call-duration-measurer;
+```
+
+#### CommonJS
+```
+const { CallDurationMeasurer } = require('call-duration-measurer);
+```
+
+Please see the API documentation above for more details on importing the `CallDurationMeasurer` class.
