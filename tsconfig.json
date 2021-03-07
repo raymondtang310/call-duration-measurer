@@ -12,8 +12,8 @@
       "*": ["./src/*"]
     },
     "plugins": [
-      { "transform": "typescript-transform-paths" },
-      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+      { "transform": "@zerollup/ts-transform-paths" },
+      { "transform": "@zerollup/ts-transform-paths", "afterDeclarations": true }
     ],
     "strict": true,
     "target": "es5"

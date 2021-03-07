@@ -26,26 +26,30 @@ const callDurationMeasurer = new CallDurationMeasurer();
 The `CallDurationMeasurer` class provides a stateful way to measure and record the call durations of given functions.
 This is particularly useful when working with code that includes several function calls that you want to measure and keep track of.
 
-#### How to import:
-- Root level named import (ES6):
+#### How to import (recommended):
+- Root level named import using ES6 `import` (**best for minimizing bundle size due to tree-shaking support**):
     ```
     import { CallDurationMeasurer } from 'call-duration-measurer';
     ```
-- Root level named import (CommonJS):
+- Root level named import using CommonJS `require`:
     ```
     const { CallDurationMeasurer } = require('call-duration-measurer');
     ```
-- Subfolder import (ES6):
+
+#### Other ways to import (not recommended*):
+- Subfolder import from ES6 module using ES6 `import`:
+    ```
+    import CallDurationMeasurer from 'call-duration-measurer/esm/CallDurationMeasurer';
+    ```
+- Subfolder import from UMD module using ES6 `import`:
     ```
     import CallDurationMeasurer from 'call-duration-measurer/CallDurationMeasurer';
     ```
-- Subfolder import (CommonJS):
+- Subfolder import using CommonJS `require`:
     ```
     const CallDurationMeasurer = require('call-duration-measurer/CallDurationMeasurer').default;
     ```
-
-**Note:** If your application is using a bundler (e.g., webpack), importing from the subfolder can reduce your application's bundle size, since importing from a specific directory can help the bundler detect which parts of the `call-duration-measurer` package are actually being used.  
-Coming soon: Better tree-shaking support when using the root level named import via ES6 `import`.
+__*__ These import strategies are not recommended due to having either neglible or heavier impacts to bundle size for consuming applications in comparison to the recommended import strategies, coupled with having subjectively uglier import statements.
 
 The `CallDurationMeasurer` class contains the following methods:
 
@@ -453,41 +457,51 @@ import { invoke, measurify, invokeWithOptions } from 'call-duration-measurer';
 
 Whereas the `CallDurationMeasurer` class is helpful for keeping a history of call durations, these inline measuring functions are useful for stateless one-off call duration measurements.
 
-#### How to import:
-
-- Root level named imports (ES6):
+#### How to import (recommended):
+- Root level named imports using ES6 `import` (**best for minimizing bundle size due to tree-shaking support**):
     ```
     import { invoke, measurify, invokeWithOptions } from 'call-duration-measurer';
     ```
-- Root level named imports (CommonJS):
+- Root level named imports using CommonJS `require`:
     ```
     const { invoke, measurify, invokeWithOptions } = require('call-duration-measurer');
     ```
-- Subfolder named imports (ES6):
+
+#### Other ways to import (not recommended*):
+- Subfolder named imports from ES6 module using ES6 `import`:
+    ```
+    import { invoke, measurify, invokeWithOptions } from 'call-duration-measurer/esm/inlineMeasurer';
+    ```
+- Subfolder named imports from UMD module using ES6 `import`:
     ```
     import { invoke, measurify, invokeWithOptions } from 'call-duration-measurer/inlineMeasurer';
     ```
-- Subfolder named imports (CommonJS):
+- Subfolder named imports using CommonJS `require`:
     ```
     const { invoke, measurify, invokeWithOptions } = require('call-duration-measurer/inlineMeasurer');
     ```
-- Subfolder single object import containing all functions (ES6):
+- Subfolder single object import containing all functions from ES6 module using ES6 `import`:
+    ```
+    import * as inlineMeasurer from 'call-duration-measurer/esm/inlineMeasurer';
+    // inlineMeasurer.invoke(...)
+    // inlineMeasurer.measurify(...)
+    // inlineMeasurer.invokeWithOptions(...)
+    ```
+- Subfolder single object import containing all functions from UMD module using ES6 `import`:
     ```
     import * as inlineMeasurer from 'call-duration-measurer/inlineMeasurer';
     // inlineMeasurer.invoke(...)
     // inlineMeasurer.measurify(...)
     // inlineMeasurer.invokeWithOptions(...)
     ```
-- Subfolder single object import containing all functions (CommonJS):
+- Subfolder single object import containing all functions using CommonJS `require`:
     ```
     const inlineMeasurer = require('call-duration-measurer/inlineMeasurer');
     // inlineMeasurer.invoke(...)
     // inlineMeasurer.measurify(...)
     // inlineMeasurer.invokeWithOptions(...)
     ```
-
-**Note:** If your application is using a bundler (e.g., webpack), importing from the subfolder can reduce your application's bundle size, since importing from a specific directory can help the bundler detect which parts of the `call-duration-measurer` package are actually being used.  
-Coming soon: Better tree-shaking support when using the top level named imports via ES6 `import`.
+__*__ These import strategies are not recommended due to having either neglible or heavier impacts to bundle size for consuming applications in comparison to the recommended import strategies, coupled with having subjectively uglier import statements.
 
 This package supports the following inline measuring functions:
 
