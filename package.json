@@ -10,6 +10,18 @@
   "author": "Raymond Tang",
   "license": "MIT",
   "repository": "https://github.com/raymondtang310/call-duration-measurer.git",
+  "keywords": [
+    "call",
+    "duration",
+    "measurer",
+    "measure",
+    "function",
+    "promise",
+    "execution",
+    "time",
+    "timer",
+    "performance"
+  ],
   "private": true,
   "scripts": {
     "clean": "rimraf dist",
