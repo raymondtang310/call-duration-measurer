@@ -12,7 +12,7 @@ import { InvokeOptions, MeasurementResult } from 'types';
  *          Otherwise, returns a {@link MeasurementResult}.
  */
 export function invoke<T>(
-  func: (...params: unknown[]) => Promise<T>,
+  func: (...params: any[]) => Promise<T>,
   scope?: unknown,
   ...args: unknown[]
 ): Promise<MeasurementResult<T>>;
@@ -27,9 +27,9 @@ export function invoke<T>(
  * @returns If the result of `func` is a promise, returns a promise containing a {@link MeasurementResult}.
  *          Otherwise, returns a {@link MeasurementResult}.
  */
-export function invoke<T>(func: (...params: unknown[]) => T, scope?: unknown, ...args: unknown[]): MeasurementResult<T>;
+export function invoke<T>(func: (...params: any[]) => T, scope?: unknown, ...args: unknown[]): MeasurementResult<T>;
 export function invoke<T>(
-  func: (...params: unknown[]) => Promise<T> | T,
+  func: (...params: any[]) => Promise<T> | T,
   scope?: unknown,
   ...args: unknown[]
 ): Promise<MeasurementResult<T>> | MeasurementResult<T> {
@@ -51,7 +51,7 @@ export function invoke<T>(
  *         2) Otherwise, returns a {@link MeasurementResult}.
  */
 export function measurify<T>(
-  func: (...params: unknown[]) => Promise<T>,
+  func: (...params: any[]) => Promise<T>,
   scope?: unknown
 ): (...args: unknown[]) => Promise<MeasurementResult<T>>;
 /**
@@ -68,9 +68,9 @@ export function measurify<T>(
  *
  *         2) Otherwise, returns a {@link MeasurementResult}.
  */
-export function measurify<T>(func: (...params: unknown[]) => T, scope?: unknown): (...args: unknown[]) => MeasurementResult<T>;
+export function measurify<T>(func: (...params: any[]) => T, scope?: unknown): (...args: unknown[]) => MeasurementResult<T>;
 export function measurify<T>(
-  func: (...params: unknown[]) => Promise<T> | T,
+  func: (...params: any[]) => Promise<T> | T,
   scope?: unknown
 ): (...args: unknown[]) => Promise<MeasurementResult<T>> | MeasurementResult<T> {
   return (...args: unknown[]): Promise<MeasurementResult<T>> | MeasurementResult<T> =>
@@ -93,7 +93,7 @@ export function measurify<T>(
  *          Otherwise, returns a {@link MeasurementResult}.
  */
 export function invokeWithOptions<T>(
-  func: (...params: unknown[]) => Promise<T>,
+  func: (...params: any[]) => Promise<T>,
   options?: InvokeOptions
 ): Promise<MeasurementResult<T>>;
 /**
@@ -111,9 +111,9 @@ export function invokeWithOptions<T>(
  * @returns If the result of `func` is a promise, returns a promise containing a {@link MeasurementResult}.
  *          Otherwise, returns a {@link MeasurementResult}.
  */
-export function invokeWithOptions<T>(func: (...params: unknown[]) => T, options?: InvokeOptions): MeasurementResult<T>;
+export function invokeWithOptions<T>(func: (...params: any[]) => T, options?: InvokeOptions): MeasurementResult<T>;
 export function invokeWithOptions<T>(
-  func: (...params: unknown[]) => Promise<T> | T,
+  func: (...params: any[]) => Promise<T> | T,
   { scope, args = [] }: InvokeOptions = {
     args: [],
   }

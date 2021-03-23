@@ -13,6 +13,12 @@ module.exports = {
   ],
   overrides: [
     {
+      files: ['CallDurationMeasurer.ts', 'inlineMeasurer.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+      }
+    },
+    {
       files: ['CallDurationMeasurer.test.ts', 'inlineMeasurer.test.ts'],
       rules: {
         '@typescript-eslint/no-empty-function': 'off',

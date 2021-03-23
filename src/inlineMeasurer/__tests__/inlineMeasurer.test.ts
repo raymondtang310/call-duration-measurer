@@ -19,8 +19,8 @@ describe('inLineMeasurer', () => {
   describe('invoke', () => {
     describe('when there is a given scope', () => {
       it('should invoke the given function with the given arguments using the given scope', () => {
-        const scope = { func: jest.fn().mockName('scope.func') };
-        const args = ['arg'];
+        const scope: { func: jest.Mock<void, [string, number]> } = { func: jest.fn().mockName('scope.func') };
+        const args: [string, number] = ['hello', 1];
         jest.spyOn(scope.func, 'apply').mockName('scope.func.apply');
 
         inlineMeasurer.invoke(scope.func, scope, ...args);
@@ -58,8 +58,8 @@ describe('inLineMeasurer', () => {
 
     describe('when there is NOT a given scope', () => {
       it('should invoke the given function with the given arguments', () => {
-        const func = jest.fn().mockName('func');
-        const args = ['arg'];
+        const func: jest.Mock<void, [string, number]> = jest.fn().mockName('func');
+        const args: [string, number] = ['hello', 1];
 
         inlineMeasurer.invoke(func, null, ...args);
 
@@ -103,8 +103,8 @@ describe('inLineMeasurer', () => {
     describe('when the resulting function is invoked', () => {
       describe('and there is a given scope', () => {
         it('should invoke the given function with the given arguments using the given scope', () => {
-          const scope = { func: jest.fn().mockName('scope.func') };
-          const args = ['arg'];
+          const scope: { func: jest.Mock<void, [string, number]> } = { func: jest.fn().mockName('scope.func') };
+          const args: [string, number] = ['hello', 1];
           jest.spyOn(scope.func, 'apply').mockName('scope.func.apply');
 
           inlineMeasurer.measurify(scope.func, scope)(...args);
@@ -142,8 +142,8 @@ describe('inLineMeasurer', () => {
 
       describe('and there is NOT a given scope', () => {
         it('should invoke the given function with the given arguments', () => {
-          const func = jest.fn().mockName('func');
-          const args = ['arg'];
+          const func: jest.Mock<void, [string, number]> = jest.fn().mockName('func');
+          const args: [string, number] = ['hello', 1];
 
           inlineMeasurer.measurify(func)(...args);
 
@@ -181,8 +181,8 @@ describe('inLineMeasurer', () => {
       describe('and there is a given scope', () => {
         describe('and there are given arguments', () => {
           it('should invoke the given function with the given arguments using the given scope', () => {
-            const scope = { func: jest.fn().mockName('scope.func') };
-            const args = ['arg'];
+            const scope: { func: jest.Mock<void, [string, number]> } = { func: jest.fn().mockName('scope.func') };
+            const args: [string, number] = ['hello', 1];
             jest.spyOn(scope.func, 'apply').mockName('scope.func.apply');
 
             inlineMeasurer.invokeWithOptions(scope.func, { scope, args });
@@ -234,8 +234,8 @@ describe('inLineMeasurer', () => {
       describe('and there is NOT a given scope', () => {
         describe('and there are given arguments', () => {
           it('should invoke the given function with the given arguments', () => {
-            const func = jest.fn().mockName('func');
-            const args = ['arg'];
+            const func: jest.Mock<void, [string, number]> = jest.fn().mockName('func');
+            const args: [string, number] = ['hello', 1];
 
             inlineMeasurer.invokeWithOptions(func, { args });
 

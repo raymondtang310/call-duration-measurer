@@ -18,9 +18,9 @@ class CallDurationMeasurer {
    * @returns If the result of `func` is a promise, returns a promise containing the resolved value of the promise returned by `func`.
    *          Otherwise, returns the result of `func`.
    */
-  public invoke<T>(func: (...params: unknown[]) => T, scope?: unknown, ...args: unknown[]): T;
-  public invoke<T>(func: (...params: unknown[]) => Promise<T>, scope?: unknown, ...args: unknown[]): Promise<T>;
-  public invoke<T>(func: (...params: unknown[]) => T | Promise<T>, scope?: unknown, ...args: unknown[]): T | Promise<T> {
+  public invoke<T>(func: (...params: any[]) => T, scope?: unknown, ...args: unknown[]): T;
+  public invoke<T>(func: (...params: any[]) => Promise<T>, scope?: unknown, ...args: unknown[]): Promise<T>;
+  public invoke<T>(func: (...params: any[]) => T | Promise<T>, scope?: unknown, ...args: unknown[]): T | Promise<T> {
     return this.invokeWithOptions(func, { scope, args });
   }
 
@@ -38,9 +38,9 @@ class CallDurationMeasurer {
    *
    *         2) Otherwise, returns the result of `func`.
    */
-  public measurify<T>(func: (...params: unknown[]) => T, scope?: unknown): (...args: unknown[]) => T;
-  public measurify<T>(func: (...params: unknown[]) => Promise<T>, scope?: unknown): (...args: unknown[]) => Promise<T>;
-  public measurify<T>(func: (...params: unknown[]) => T | Promise<T>, scope?: unknown): (...args: unknown[]) => T | Promise<T> {
+  public measurify<T>(func: (...params: any[]) => T, scope?: unknown): (...args: unknown[]) => T;
+  public measurify<T>(func: (...params: any[]) => Promise<T>, scope?: unknown): (...args: unknown[]) => Promise<T>;
+  public measurify<T>(func: (...params: any[]) => T | Promise<T>, scope?: unknown): (...args: unknown[]) => T | Promise<T> {
     return (...args: unknown[]): T | Promise<T> => this.invokeWithOptions(func, { scope, args });
   }
 
@@ -80,10 +80,10 @@ class CallDurationMeasurer {
    * @returns If the result of `func` is a promise, returns a promise containing the resolved value of the promise returned by `func`.
    *          Otherwise, returns the result of `func`.
    */
-  public invokeWithOptions<T>(func: (...params: unknown[]) => T, options?: CallDurationRecordingOptions): T;
-  public invokeWithOptions<T>(func: (...params: unknown[]) => Promise<T>, options?: CallDurationRecordingOptions): Promise<T>;
+  public invokeWithOptions<T>(func: (...params: any[]) => T, options?: CallDurationRecordingOptions): T;
+  public invokeWithOptions<T>(func: (...params: any[]) => Promise<T>, options?: CallDurationRecordingOptions): Promise<T>;
   public invokeWithOptions<T>(
-    func: (...params: unknown[]) => T | Promise<T>,
+    func: (...params: any[]) => T | Promise<T>,
     { functionCallName = func.name, scope, args = [] }: CallDurationRecordingOptions = {
       functionCallName: func.name,
       args: [],

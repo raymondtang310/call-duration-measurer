@@ -9,8 +9,8 @@ describe('CallDurationMeasurer', () => {
     describe('when there is a given scope', () => {
       it('should invoke the given function with the given arguments using the given scope', () => {
         const callDurationMeasurer = new CallDurationMeasurer();
-        const scope = { func: jest.fn().mockName('scope.func') };
-        const args = ['arg'];
+        const scope: { func: jest.Mock<void, [string, number]> } = { func: jest.fn().mockName('scope.func') };
+        const args: [string, number] = ['hello', 1];
         jest.spyOn(scope.func, 'apply').mockName('scope.func.apply');
 
         callDurationMeasurer.invoke(scope.func, scope, ...args);
@@ -51,8 +51,8 @@ describe('CallDurationMeasurer', () => {
     describe('when there is NOT a given scope', () => {
       it('should invoke the given function with the given arguments', () => {
         const callDurationMeasurer = new CallDurationMeasurer();
-        const func = jest.fn().mockName('func');
-        const args = ['arg'];
+        const func: jest.Mock<void, [string, number]> = jest.fn().mockName('func');
+        const args: [string, number] = ['hello', 1];
 
         callDurationMeasurer.invoke(func, null, ...args);
 
@@ -142,8 +142,8 @@ describe('CallDurationMeasurer', () => {
       describe('and there is NOT a given scope', () => {
         it('should invoke the given function with the given arguments', () => {
           const callDurationMeasurer = new CallDurationMeasurer();
-          const func = jest.fn().mockName('func');
-          const args = ['arg'];
+          const func: jest.Mock<void, [string, number]> = jest.fn().mockName('func');
+          const args: [string, number] = ['hello', 1];
 
           callDurationMeasurer.measurify(func)(...args);
 
@@ -306,8 +306,8 @@ describe('CallDurationMeasurer', () => {
         describe('and there are given arguments', () => {
           it('should invoke the given function with the given arguments using the given scope', () => {
             const callDurationMeasurer = new CallDurationMeasurer();
-            const scope = { func: jest.fn().mockName('scope.func') };
-            const args = ['arg'];
+            const scope: { func: jest.Mock<void, [string, number]> } = { func: jest.fn().mockName('scope.func') };
+            const args: [string, number] = ['hello', 1];
             jest.spyOn(scope.func, 'apply').mockName('scope.func.apply');
 
             callDurationMeasurer.invokeWithOptions(scope.func, { scope, args });
@@ -363,8 +363,8 @@ describe('CallDurationMeasurer', () => {
         describe('and there are given arguments', () => {
           it('should invoke the given function with the given arguments', () => {
             const callDurationMeasurer = new CallDurationMeasurer();
-            const func = jest.fn().mockName('func');
-            const args = ['arg'];
+            const func: jest.Mock<void, [string, number]> = jest.fn().mockName('func');
+            const args: [string, number] = ['hello', 1];
 
             callDurationMeasurer.invokeWithOptions(func, { args });
 
